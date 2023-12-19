@@ -67,3 +67,5 @@ Things you may want to cover:
 | telephone          | string     | null: false                    |
 
 
+
+
