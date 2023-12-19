@@ -35,7 +35,13 @@ Things you may want to cover:
 | last_name_kana     | string | null: false                          |
 | birth_date         | date   | null: false                          |
 | email              | string | null: false, unique: true            |
-| password           | string | null: false                          |
+| encrypted_password | string | null: false                          |
+
+### Association
+
+- has_many :purchase_records
+- has_many :items
+
 
 
 
@@ -45,13 +51,21 @@ Things you may want to cover:
 | --------------------- | ---------- | ------------------------------ |
 | item_name             | string     | null: false                    |
 | description           | text       | null: false                    |
-| category              | integer    | null: false                    |
-| item_condition        | integer    | null: false                    |
-| delivery_charge       | integer    | null: false                    |
-| shipping_place        | integer    | null: false                    |
-| delivery_date         | integer    | null: false                    |
+| category_id           | integer    | null: false                    |
+| item_condition_id     | integer    | null: false                    |
+| delivery_charge_id    | integer    | null: false                    |
+| prefecture_id         | integer    | null: false                    |
+| delivery_date_id      | integer    | null: false                    |
 | item_price            | integer    | null: false                    |
 | user                  | references | null: false, foreign_key: true |
+
+### Association
+
+- belongs_to :user
+- has_one :purchase_record
+
+
+
 
 
 
@@ -61,12 +75,31 @@ Things you may want to cover:
 | Column             | Type       | Options                        |
 | ------------------ | ---------- | ------------------------------ |
 | post_code          | string     | null: false                    |
-| prefecture         | integer    | null: false                    |
+| prefecture_id      | integer    | null: false                    |
 | municipality       | string     | null: false                    |
 | street_address     | string     | null: false                    |
 | building           | string     |                                |
 | telephone          | string     | null: false                    |
+| purchase_record    | references | null: false, foreign_key: true |
+
+### Association
+
+- belongs_to :purchase_record
 
 
 
 
+
+
+## purchase_records テーブル	
+
+| Column             | Type       | Options                        |	
+| ------------------ | ---------- | ------------------------------ |	
+| user               | references | null: false, foreign_key: true |
+| item               | references | null: false, foreign_key: true |
+
+### Association
+
+- belongs_to :user
+- belongs_to :item
+- has_one :address
