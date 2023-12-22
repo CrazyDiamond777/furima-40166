@@ -78,7 +78,7 @@ RSpec.describe Item, type: :model do
         expect(@item.errors.full_messages).to include("Item price must be less than or equal to 9999999")
       end
 
-      it '販売価格がが全角の数字では出品できない' do
+      it '販売価格が全角の数字では出品できない' do
         @item.item_price = '１２３４'
         @item.valid?
         expect(@item.errors.full_messages).to include("Item price is not a number")
