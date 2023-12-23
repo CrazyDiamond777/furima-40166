@@ -1,6 +1,6 @@
 class ItemsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :edit]
-  before_action :set_item, only: [:show, :edit, :update] 
+  before_action :authenticate_user!, only: [:new, :edit, :destroy]
+  before_action :set_item, only: [:show, :edit, :update, :destroy]
 
   def index
     @items = Item.order("created_at DESC")
@@ -13,9 +13,9 @@ class ItemsController < ApplicationController
   def create
     @item = Item.new(item_params)
     if @item.save
-    redirect_to root_path
+     redirect_to root_path
     else
-    render :new, status: :unprocessable_entity
+     render :new, status: :unprocessable_entity
     end
   end
 
@@ -23,15 +23,23 @@ class ItemsController < ApplicationController
   end
 
   def edit
-
     unless user_signed_in? && current_user == @item.user
       redirect_to action: :index
     end
   end
 
+  def destroy
+    if current_user == @item.user
+      @item.destroy
+    else
+      redirect_to item_path
+    end
+    redirect_to action: :index
+  end
+
   def update
     if @item.update(item_params)
-      redirect_to item_path(@item)
+      redirect_to item_path
     else
       render :edit, status: :unprocessable_entity
     end
@@ -46,5 +54,4 @@ class ItemsController < ApplicationController
   def set_item
     @item = Item.find(params[:id])
   end
-
 end
