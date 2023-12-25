@@ -4,6 +4,11 @@ class ItemsController < ApplicationController
 
   def index
     @items = Item.order("created_at DESC")
+    @purchase_records = PurchaseRecord.where(item_id: @items.pluck(:id))
+  end
+
+  def show
+    @purchase_records = PurchaseRecord.where(item_id: @item.id)
   end
 
   def new
@@ -19,12 +24,20 @@ class ItemsController < ApplicationController
     end
   end
 
-  def show
+  def edit
+    @purchase_records = PurchaseRecord.where(item_id: @item.id)
+    if current_user != @item.user || (@purchase_records.present? && @purchase_records.pluck(:item_id).include?(@item.id))
+      redirect_to action: :index
+    else
+      render :edit
+    end
   end
 
-  def edit
-    unless user_signed_in? && current_user == @item.user
-      redirect_to action: :index
+  def update
+    if @item.update(item_params)
+      redirect_to item_path
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -37,14 +50,6 @@ class ItemsController < ApplicationController
     redirect_to action: :index
   end
 
-  def update
-    if @item.update(item_params)
-      redirect_to item_path
-    else
-      render :edit, status: :unprocessable_entity
-    end
-  end
-
   private
 
   def item_params
@@ -54,4 +59,5 @@ class ItemsController < ApplicationController
   def set_item
     @item = Item.find(params[:id])
   end
+
 end
