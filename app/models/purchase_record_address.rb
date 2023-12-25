@@ -1,12 +1,11 @@
 class PurchaseRecordAddress
-
   include ActiveModel::Model
-  
+
   attr_accessor :post_code, :prefecture_id, :municipality, :street_address, :building, :telephone, :user_id, :item_id, :token
-  
+
   with_options presence: true do
     validates :post_code, format: { with: /\A\d{3}-\d{4}\z/ }
-    validates :prefecture_id, numericality: { other_than: 1 , message: "can't be blank"}
+    validates :prefecture_id, numericality: { other_than: 1, message: "can't be blank" }
     validates :municipality
     validates :street_address
     validates :telephone, length: { in: 10..11 }, numericality: { only_integer: true }
@@ -16,9 +15,8 @@ class PurchaseRecordAddress
   end
 
   def save
-    purchase_record = PurchaseRecord.create(user_id: user_id, item_id: item_id)
-    Address.create(post_code: post_code, prefecture_id: prefecture_id, municipality: municipality, street_address: street_address, building: building, telephone: telephone, purchase_record_id: purchase_record.id)
+    purchase_record = PurchaseRecord.create(user_id:, item_id:)
+    Address.create(post_code:, prefecture_id:, municipality:,
+                   street_address:, building:, telephone:, purchase_record_id: purchase_record.id)
   end
-
-
 end

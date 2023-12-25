@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe PurchaseRecordAddress, type: :model do
-
   before do
     user = FactoryBot.create(:user)
     item = FactoryBot.create(:item)
@@ -9,7 +8,6 @@ RSpec.describe PurchaseRecordAddress, type: :model do
   end
 
   describe '購入' do
-
     context '正常形' do
       it '必要な情報を適切に入力すると、商品の購入ができる' do
         expect(@purchase_record_address).to be_valid
@@ -26,15 +24,20 @@ RSpec.describe PurchaseRecordAddress, type: :model do
         @purchase_record_address.valid?
         expect(@purchase_record_address.errors.full_messages).to include("Post code can't be blank")
       end
+      it '郵便番号が半角ハイフンを含む形でなければ購入できない' do
+        @purchase_record_address.post_code = '9820000'
+        @purchase_record_address.valid?
+        expect(@purchase_record_address.errors.full_messages).to include('Post code is invalid')
+      end
       it '郵便番号「3桁ハイフン4桁」でなければ購入できない' do
         @purchase_record_address.post_code = '2343-345'
         @purchase_record_address.valid?
-        expect(@purchase_record_address.errors.full_messages).to include("Post code is invalid")
+        expect(@purchase_record_address.errors.full_messages).to include('Post code is invalid')
       end
       it '郵便番号が半角でなければ購入できない' do
         @purchase_record_address.post_code = '９８２−００００'
         @purchase_record_address.valid?
-        expect(@purchase_record_address.errors.full_messages).to include("Post code is invalid")
+        expect(@purchase_record_address.errors.full_messages).to include('Post code is invalid')
       end
       it '都道府県が空では購入できない' do
         @purchase_record_address.prefecture_id = ''
@@ -64,38 +67,37 @@ RSpec.describe PurchaseRecordAddress, type: :model do
       it '電話番号が10-11桁でなければ購入できない(12桁)' do
         @purchase_record_address.telephone = '090123456789'
         @purchase_record_address.valid?
-        expect(@purchase_record_address.errors.full_messages).to include("Telephone is too long (maximum is 11 characters)")
+        expect(@purchase_record_address.errors.full_messages).to include('Telephone is too long (maximum is 11 characters)')
       end
       it '電話番号が10-11桁でなければ購入できない(9桁)' do
         @purchase_record_address.telephone = '090123456'
         @purchase_record_address.valid?
-        expect(@purchase_record_address.errors.full_messages).to include("Telephone is too short (minimum is 10 characters)")
+        expect(@purchase_record_address.errors.full_messages).to include('Telephone is too short (minimum is 10 characters)')
       end
       it '電話番号が半角数字でなければ購入できない' do
         @purchase_record_address.telephone = '０９０１２３４５６７８'
         @purchase_record_address.valid?
-        expect(@purchase_record_address.errors.full_messages).to include("Telephone is not a number")
+        expect(@purchase_record_address.errors.full_messages).to include('Telephone is not a number')
       end
-      it "tokenが空では登録できないこと" do
+      it 'tokenが空では登録できないこと' do
         @purchase_record_address.token = nil
         @purchase_record_address.valid?
         expect(@purchase_record_address.errors.full_messages).to include("Token can't be blank")
       end
 
-      it "userが紐付いていなければ購入できない" do
+      it 'userが紐付いていなければ購入できない' do
         item = FactoryBot.create(:item)
         usernil = FactoryBot.build(:purchase_record_address, item_id: item.id)
         usernil.valid?
         expect(usernil.errors.full_messages).to include("User can't be blank")
-       end
+      end
 
-      it "itemが紐付いていなければ購入できない" do
+      it 'itemが紐付いていなければ購入できない' do
         user = FactoryBot.create(:user)
-        itemnil= FactoryBot.build(:purchase_record_address, user_id: user.id)
+        itemnil = FactoryBot.build(:purchase_record_address, user_id: user.id)
         itemnil.valid?
         expect(itemnil.errors.full_messages).to include("Item can't be blank")
       end
-
     end
   end
 end
