@@ -69,25 +69,25 @@ RSpec.describe Item, type: :model do
       it '販売価格が300円以下では出品できない' do
         @item.item_price = '299'
         @item.valid?
-        expect(@item.errors.full_messages).to include("Item price must be greater than or equal to 300")
+        expect(@item.errors.full_messages).to include('Item price must be greater than or equal to 300')
       end
 
       it '販売価格がが1000万円以上では出品できない' do
-        @item.item_price= '10000000'
+        @item.item_price = '10000000'
         @item.valid?
-        expect(@item.errors.full_messages).to include("Item price must be less than or equal to 9999999")
+        expect(@item.errors.full_messages).to include('Item price must be less than or equal to 9999999')
       end
 
       it '販売価格が全角の数字では出品できない' do
         @item.item_price = '１２３４'
         @item.valid?
-        expect(@item.errors.full_messages).to include("Item price is not a number")
+        expect(@item.errors.full_messages).to include('Item price is not a number')
       end
 
       it '販売価格がが整数でなければ出品できない' do
         @item.item_price = '123.01'
         @item.valid?
-        expect(@item.errors.full_messages).to include("Item price is out of setting range")
+        expect(@item.errors.full_messages).to include('Item price is out of setting range')
       end
 
       it 'ユーザーが紐付いていないと保存できない' do
